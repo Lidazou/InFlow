@@ -1,0 +1,2273 @@
+/* ============================================
+   InFlow - 全局样式
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  background: #0a0a0f;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  background: #0a0a0f;
+}
+
+/* ============================================
+   App 主容器
+   ============================================ */
+.app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: background 0.3s ease;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================
+   粒子画布
+   ============================================ */
+.particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================
+   主内容区
+   ============================================ */
+.main-content {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 30px;
+}
+
+/* ============================================
+   情绪文字
+   ============================================ */
+.emotion-label {
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-align: center;
+  opacity: 0.85;
+  transition: all 0.15s ease;
+}
+
+.emotion-label.active {
+  opacity: 1;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+}
+
+.emotion-score {
+  font-size: clamp(52px, 14vw, 76px);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  text-align: center;
+  opacity: 0.5;
+}
+
+.emotion-score.active {
+  opacity: 1;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+}
+
+.score-suffix {
+  font-size: 0.35em;
+  font-weight: 400;
+  margin-left: 8px;
+  opacity: 0.7;
+}
+
+/* ============================================
+   Emoji 区域
+   ============================================ */
+.emoji-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 35vh;
+  min-height: 150px;
+}
+
+.emoji-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.08s ease-out;
+  will-change: transform;
+}
+
+.emoji-char {
+  font-size: clamp(110px, 32vmin, 190px);
+  line-height: 1;
+  filter: drop-shadow(0 15px 50px rgba(0, 0, 0, 0.4));
+}
+
+/* 充气状态 */
+.emoji-display.inflating .emoji-char {
+  filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.5));
+}
+
+/* 爆发动画 */
+@keyframes emoji-burst {
+  0% {
+    transform: scale(1);
+    filter: blur(0px) brightness(1);
+  }
+  25% {
+    transform: scale(1.45);
+    filter: blur(3px) brightness(1.7);
+  }
+  50% {
+    transform: scale(1.35);
+    filter: blur(2px) brightness(1.3);
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+.emoji-display.bursting {
+  animation: emoji-burst 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ============================================
+   Press 按钮
+   ============================================ */
+.press-button {
+  width: clamp(130px, 38vw, 160px);
+  height: clamp(130px, 38vw, 160px);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow:
+    0 0 40px rgba(255, 255, 255, 0.08),
+    inset 0 0 40px rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.press-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.press-button.pressing {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 60px rgba(255, 255, 255, 0.25),
+    0 0 120px rgba(255, 255, 255, 0.1),
+    inset 0 0 50px rgba(255, 255, 255, 0.08);
+  transform: scale(1.05);
+}
+
+.press-button.pressing::before {
+  opacity: 1;
+}
+
+.press-button.pressing::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: pulse-ring 1.2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+.press-text {
+  font-size: clamp(13px, 3.5vw, 17px);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   底部导航
+   ============================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: max(70px, calc(60px + env(safe-area-inset-bottom)));
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  z-index: 50;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 8px 20px;
+  transition: all 0.2s ease;
+}
+
+.nav-item.active {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-icon {
+  font-size: 24px;
+}
+
+/* ============================================
+   保存提示
+   ============================================ */
+.saved-toast {
+  position: fixed;
+  bottom: max(env(safe-area-inset-bottom), 180px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-radius: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  z-index: 100;
+  animation: toast-in 0.35s ease-out;
+}
+
+.saved-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(100, 255, 180, 0.35);
+  border-radius: 50%;
+  font-size: 13px;
+}
+
+@keyframes toast-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(25px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+/* ============================================
+   原因输入面板
+   ============================================ */
+.reason-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.reason-panel {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(180deg, #16161f 0%, #1a1a26 100%);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  animation: slide-up 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.reason-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.reason-emoji {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.reason-info {
+  flex: 1;
+}
+
+.reason-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.reason-score {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reason-prompt {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.reason-input-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.reason-input {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #ffffff;
+  font-size: 15px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.reason-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.reason-input:focus {
+  border-color: rgba(100, 200, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reason-count {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.reason-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.reason-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.reason-btn.skip {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reason-btn.skip:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.reason-btn.save {
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  color: #ffffff;
+}
+
+.reason-btn.save:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* ============================================
+   历史页面
+   ============================================ */
+.history-page {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px 100px;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.history-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.history-count {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.history-loading,
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+}
+
+.empty-hint {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.history-section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+
+/* ============================================
+   记录卡片
+   ============================================ */
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.record-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.record-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.record-emoji {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.record-info {
+  flex: 1;
+}
+
+.record-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.record-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.record-right {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.record-score {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.record-reason {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.reason-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   图表
+   ============================================ */
+.chart-container {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px 16px 16px;
+}
+
+.chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.chart-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 16px;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+.chart-empty {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ============================================
+   分析引擎
+   ============================================ */
+.analysis-container {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px 16px;
+}
+
+.analysis-header {
+  margin-bottom: 16px;
+}
+
+.analysis-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.analysis-summary {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.5;
+}
+
+.analysis-empty {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.analysis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.analysis-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  padding: 16px;
+  border-left: 3px solid;
+}
+
+.analysis-card.positive {
+  border-color: #64c8ff;
+}
+
+.analysis-card.warning {
+  border-color: #ffb347;
+}
+
+.analysis-card.neutral {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.card-icon {
+  font-size: 16px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-message {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.card-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.suggestion-item {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.4;
+  padding-left: 8px;
+}
+
+/* ============================================
+   饮食模块
+   ============================================ */
+.diet-page {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.diet-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px 12px;
+}
+
+.diet-page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.back-btn,
+.stats-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.diet-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 16px 100px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.diet-content.scrollable {
+  /* 已合并到 .diet-content */
+}
+
+/* 热量仪表盘 */
+.calorie-dashboard {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-canvas {
+  width: 100%;
+  height: 200px;
+  display: block;
+}
+
+.dashboard-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%);
+  text-align: center;
+}
+
+.dashboard-intake {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dashboard-unit {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
+}
+
+.dashboard-status {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.dashboard-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+}
+
+/* 日期选择器 */
+.date-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.date-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.date-display {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* 餐次卡片 */
+.meals-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.meal-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.meal-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.meal-icon {
+  font-size: 24px;
+}
+
+.meal-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.meal-time {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.meal-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-calories {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.meal-arrow {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s;
+}
+
+.meal-arrow.up {
+  transform: rotate(90deg);
+}
+
+.meal-content {
+  padding: 0 16px 16px;
+}
+
+.meal-upload {
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.meal-upload:hover {
+  border-color: rgba(100, 200, 255, 0.4);
+  background: rgba(100, 200, 255, 0.05);
+}
+
+.upload-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.upload-text {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.meal-image-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.meal-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.recognizing-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.recognizing-spinner {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #64c8ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.change-image-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.detected-foods {
+  margin-top: 16px;
+}
+
+.foods-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.foods-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.edit-foods-btn {
+  background: none;
+  border: none;
+  color: #64c8ff;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.foods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.food-item {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.food-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.food-name {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.food-calories {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.food-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.food-name-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.food-calories-edit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.food-calories-input {
+  width: 60px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  text-align: center;
+}
+
+.calories-unit {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.food-delete-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 100, 100, 0.2);
+  color: #ff6b6b;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-food-btn {
+  width: 100%;
+  background: rgba(100, 200, 255, 0.1);
+  border: 1px dashed rgba(100, 200, 255, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+  color: #64c8ff;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.meal-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.total-edit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.total-edit input {
+  width: 70px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #64c8ff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 热量预算信息 */
+.budget-info {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.budget-item {
+  text-align: center;
+}
+
+.budget-label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 6px;
+}
+
+.budget-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.budget-value.highlight {
+  color: #64c8ff;
+}
+
+.quick-weight-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* 体重提醒弹窗 */
+.weight-reminder {
+  background: linear-gradient(180deg, #1a1a26 0%, #16161f 100%);
+  border-radius: 24px;
+  padding: 32px 24px;
+  text-align: center;
+  margin: 20px;
+}
+
+.reminder-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.reminder-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.reminder-message {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.reminder-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.reminder-skip,
+.reminder-update {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.reminder-skip {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reminder-update {
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  color: #ffffff;
+}
+
+/* 体重表单 */
+.weight-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.weight-form {
+  background: linear-gradient(180deg, #1a1a26 0%, #16161f 100%);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.weight-form-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.weight-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 4px 16px;
+  margin-bottom: 20px;
+}
+
+.weight-input {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 14px 0;
+  color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+}
+
+.weight-unit {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.weight-form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.weight-cancel,
+.weight-confirm {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.weight-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.weight-confirm {
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  color: #ffffff;
+}
+
+/* 历史统计 */
+.diet-history {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 20px 16px 16px;
+  margin-bottom: 20px;
+}
+
+.history-header {
+  margin-bottom: 16px;
+}
+
+.history-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.history-canvas {
+  width: 100%;
+  height: 180px;
+  display: block;
+}
+
+/* 饮食分析 */
+.diet-analysis {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+}
+
+.analysis-header {
+  margin-bottom: 16px;
+}
+
+.analysis-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.analysis-summary {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.analysis-empty {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.analysis-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 身体信息表单 */
+.body-info-form {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  padding: 24px 20px;
+  overflow-y: auto;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  border-color: rgba(100, 200, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.form-error {
+  display: block;
+  font-size: 11px;
+  color: #ff6b6b;
+  margin-top: 6px;
+}
+
+.gender-options,
+.goal-options {
+  display: flex;
+  gap: 12px;
+}
+
+.gender-btn,
+.goal-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gender-btn.active,
+.goal-btn.active {
+  background: rgba(100, 200, 255, 0.15);
+  border-color: rgba(100, 200, 255, 0.4);
+  color: #64c8ff;
+}
+
+.gender-icon {
+  font-size: 24px;
+}
+
+.activity-options {
+  display: flex;
+  gap: 10px;
+}
+
+.activity-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.activity-btn.active {
+  background: rgba(100, 200, 255, 0.15);
+  border-color: rgba(100, 200, 255, 0.4);
+  color: #64c8ff;
+}
+
+.activity-icon {
+  font-size: 22px;
+}
+
+.activity-text {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.activity-desc {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.form-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  border: none;
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.calorie-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background: rgba(100, 200, 255, 0.1);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.calorie-item {
+  text-align: center;
+}
+
+.calorie-item.small .calorie-value {
+  font-size: 28px;
+}
+
+.calorie-value {
+  font-size: 42px;
+  font-weight: 700;
+  color: #64c8ff;
+  line-height: 1;
+}
+
+.calorie-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 8px;
+}
+
+.calorie-divider {
+  width: 1px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.goal-info {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.goal-tag,
+.activity-tag {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* BMI 显示 */
+.bmi-display {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 24px 20px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bmi-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.bmi-value {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.bmi-status {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.bmi-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+}
+
+.bmi-goal {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.bmi-goal.normal {
+  color: #64c8ff;
+}
+
+.goal-weight {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ff9f7f;
+  margin: 0 4px;
+}
+
+/* ============================================
+   运动推荐
+   ============================================ */
+.exercise-recommend {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.exercise-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.exercise-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.exercise-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exercise-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.exercise-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.exercise-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.exercise-info {
+  flex: 1;
+}
+
+.exercise-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.exercise-reason {
+  font-size: 12px;
+  color: #64c8ff;
+}
+
+.exercise-duration {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.exercise-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 8px;
+}
+
+.exercise-examples {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.examples-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   每日打卡模块
+   ============================================ */
+.checkin-page {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.checkin-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px 12px;
+}
+
+.checkin-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.checkin-settings-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.checkin-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 100px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 模块信息卡片 */
+.checkin-module-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.module-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.module-url {
+  font-size: 13px;
+  color: #64c8ff;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 状态卡片 */
+.checkin-status-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.status-rest .status-icon,
+.status-completed .status-icon,
+.status-pending .status-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.status-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.status-hint {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.status-completed .status-text {
+  color: #64c8ff;
+}
+
+.status-pending .status-text {
+  color: #ffb347;
+}
+
+/* 计时器卡片 */
+.timer-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.timer-display {
+  margin-bottom: 20px;
+}
+
+.timer-time {
+  font-size: 64px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.timer-unit {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 8px;
+}
+
+/* 进度条 */
+.progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #64c8ff 0%, #4da6ff 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+}
+
+/* 计时器按钮 */
+.timer-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.timer-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.timer-btn.start {
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  color: #ffffff;
+}
+
+.timer-btn.pause {
+  background: linear-gradient(135deg, #ffb347 0%, #ff9500 100%);
+  color: #ffffff;
+}
+
+.timer-btn.reset {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.website-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(100, 200, 255, 0.15);
+  border: 1px solid rgba(100, 200, 255, 0.3);
+  color: #64c8ff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 连续打卡卡片 */
+.streak-card {
+  background: linear-gradient(135deg, rgba(255, 179, 71, 0.15) 0%, rgba(255, 152, 0, 0.1) 100%);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 179, 71, 0.2);
+}
+
+.streak-value {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffb347;
+  line-height: 1;
+}
+
+.streak-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8px;
+}
+
+/* 本周进度卡片 */
+.week-progress-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.week-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 16px;
+}
+
+.week-days {
+  display: flex;
+  justify-content: space-between;
+}
+
+.week-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  min-width: 40px;
+}
+
+.week-day.today {
+  background: rgba(100, 200, 255, 0.15);
+}
+
+.day-name {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.day-status {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.week-day.completed .day-status {
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  color: #ffffff;
+}
+
+.week-day.rest .day-status {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* 设置弹窗 */
+.checkin-setup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 300;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.checkin-setup {
+  width: 100%;
+  max-width: 500px;
+  height: 90vh;
+  background: linear-gradient(180deg, #1a1a26 0%, #16161f 100%);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.setup-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+}
+
+.setup-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.setup-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.setup-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.setup-group {
+  margin-bottom: 24px;
+}
+
+.setup-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+}
+
+.setup-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #ffffff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.setup-input:focus {
+  border-color: rgba(100, 200, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.setup-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.setup-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 8px;
+}
+
+/* 目标时长选项 */
+.goal-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.goal-options .goal-btn {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.goal-options .goal-btn.active {
+  background: rgba(100, 200, 255, 0.15);
+  border-color: rgba(100, 200, 255, 0.4);
+  color: #64c8ff;
+}
+
+/* 休息日选项 */
+.rest-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rest-day-btn {
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rest-day-btn.active {
+  background: rgba(255, 179, 71, 0.15);
+  border-color: rgba(255, 179, 71, 0.4);
+  color: #ffb347;
+}
+
+/* 邮箱输入行 */
+.email-input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.email-input-row .setup-input {
+  flex: 1;
+}
+
+.test-email-btn {
+  padding: 14px 16px;
+  background: rgba(100, 200, 255, 0.15);
+  border: 1px solid rgba(100, 200, 255, 0.3);
+  border-radius: 12px;
+  color: #64c8ff;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.test-email-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 保存按钮 */
+.setup-footer {
+  flex-shrink: 0;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+}
+
+.setup-save-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #64c8ff 0%, #4da6ff 100%);
+  border: none;
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
